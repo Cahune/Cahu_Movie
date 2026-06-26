@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "628677426100",
+    "project_id": "cahu-movie",
+    "storage_bucket": "cahu-movie.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628677426100:android:26f4c40e427913a9d410e1",
+        "android_client_info": {
+          "package_name": "com.example.cahu_movie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWvvpATt0ZBiIUYQ1ee680UB_iNpJmCNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
