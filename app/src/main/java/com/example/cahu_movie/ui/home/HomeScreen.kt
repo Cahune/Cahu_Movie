@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 
 @Composable
 fun HomeScreen(
-//    uiState: HomeUiState,
-//    onRetry: () -> Unit,
-//    onMovieClick: (Movie) -> Unit
+
     uiState: HomeUiState,
     onRetry: () -> Unit,
     onMovieClick: (Movie) -> Unit
