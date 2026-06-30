@@ -18,18 +18,24 @@ import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.statusBarsPadding
+
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.FilterChip
 
 @Composable
 fun TopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .background(Color(0xFF11111A))
             .padding(
-                horizontal = 16.dp,
-                vertical = 14.dp
+                horizontal = 20.dp,
+                vertical = 16.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -55,3 +61,35 @@ fun TopBar() {
 
     }
 }
+//@Composable
+//fun CategoryFilter() {
+//
+//    val categories = listOf(
+//        "All",
+//        "Movie",
+//        "TV",
+//        "Anime",
+//        "Trending",
+//        "Top IMDB"
+//    )
+//
+//    LazyRow(
+//        horizontalArrangement = Arrangement.spacedBy(10.dp),
+//        contentPadding = PaddingValues(horizontal = 16.dp)
+//    ) {
+//
+//        items(categories) { item ->
+//
+//            FilterChip(
+//                selected = item == "All",
+//                onClick = { },
+//                label = {
+//                    Text(item)
+//                }
+//            )
+//
+//        }
+//
+//    }
+//
+//}

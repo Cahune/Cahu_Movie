@@ -10,7 +10,9 @@ import com.example.cahu_movie.ui.components.ErrorContent
 import com.example.cahu_movie.ui.components.LoadingContent
 import com.example.cahu_movie.ui.components.MovieGrid
 import com.example.cahu_movie.ui.components.TopBar
+import com.example.cahu_movie.ui.components.BannerSlider
 import com.example.cahu_movie.back_end.domain.models.Movie
+import androidx.compose.foundation.layout.navigationBarsPadding
 
 @Composable
 fun HomeScreen(
@@ -19,15 +21,42 @@ fun HomeScreen(
     onMovieClick: (Movie) -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
         color = Color(0xFF0B0B12)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             TopBar()
-
+//            if (uiState is HomeUiState.Success) {
+//                BannerSlider(
+//                    movies = uiState.bannerMovies,
+//                    onMovieClick = onMovieClick
+//                )
+//            }
+//            when (uiState) {
+//                HomeUiState.Loading -> {
+//                    LoadingContent()
+//                }
+//
+//                is HomeUiState.Error -> {
+//                    ErrorContent(
+//                        message = uiState.message,
+//                        onRetry = onRetry
+//                    )
+//                }
+//
+//                is HomeUiState.Success -> {
+//                    MovieGrid(
+//                        movies = uiState.movies,
+//                        onMovieClick = onMovieClick
+//                    )
+//                }
+//            }
             when (uiState) {
+
                 HomeUiState.Loading -> {
                     LoadingContent()
                 }
@@ -40,10 +69,18 @@ fun HomeScreen(
                 }
 
                 is HomeUiState.Success -> {
+
                     MovieGrid(
                         movies = uiState.movies,
-                        onMovieClick = onMovieClick
+                        onMovieClick = onMovieClick,
+                        header = {
+                            BannerSlider(
+                                movies = uiState.bannerMovies,
+                                onMovieClick = onMovieClick
+                            )
+                        }
                     )
+
                 }
             }
         }

@@ -12,6 +12,10 @@ import com.example.cahu_movie.ui.home.HomeScreen
 import com.example.cahu_movie.ui.home.HomeViewModel
 import com.example.cahu_movie.ui.theme.Cahu_MovieTheme
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.ui.Modifier
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

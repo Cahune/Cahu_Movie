@@ -45,6 +45,10 @@
             android:name=".Activity.PlayerActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
+	<activity
+    android:name=".MainActivity"
+    android:windowSoftInputMode="adjustResize"
+    ... />
     </application>
 
 </manifest>
