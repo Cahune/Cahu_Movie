@@ -17,7 +17,8 @@ sealed interface HomeUiState {
     object Loading : HomeUiState
 
     data class Success(
-        val movies: List<Movie>
+        val movies: List<Movie>,
+        val bannerMovies: List<Movie>
     ) : HomeUiState
 
     data class Error(
@@ -50,7 +51,8 @@ class HomeViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         _uiState.value = HomeUiState.Success(
-                            movies = result.data
+                            movies = result.data,
+                            bannerMovies = result.data.take(5)
                         )
                     }
 

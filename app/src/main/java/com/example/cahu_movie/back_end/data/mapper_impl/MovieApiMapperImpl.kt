@@ -1,7 +1,9 @@
 package com.example.cahu_movie.back_end.data.mapper_impl
 
 import com.example.cahu_movie.back_end.data.remote.models.MovieDto
+import com.example.cahu_movie.back_end.data.remote.models.CategoryDto
 import com.example.cahu_movie.back_end.domain.models.Movie
+import com.example.cahu_movie.back_end.domain.models.MovieCategory
 import com.example.cahu_movie.common.data.ApiMapper
 
 class MovieApiMapperImpl : ApiMapper<List<Movie>, MovieDto> {
@@ -12,6 +14,11 @@ class MovieApiMapperImpl : ApiMapper<List<Movie>, MovieDto> {
 
             Movie(
                 casts = formatEmptyValue(item.casts),
+                categories = mapCategories(
+                    item.category
+                        ?.takeIf { it.isNotEmpty() }
+                        ?: item.categories
+                ),
                 created = formatEmptyValue(item.created),
                 currentEpisode = formatEmptyValue(
                     item.currentEpisode,
@@ -47,6 +54,25 @@ class MovieApiMapperImpl : ApiMapper<List<Movie>, MovieDto> {
             )
         }
     }
+
+    private fun mapCategories(
+        categories: List<CategoryDto>?
+    ): List<MovieCategory> {
+        return categories.orEmpty().mapNotNull { category ->
+            val name = formatEmptyValue(category.name)
+            val slug = formatEmptyValue(category.slug)
+
+            if (name.isBlank() && slug.isBlank()) {
+                null
+            } else {
+                MovieCategory(
+                    name = name,
+                    slug = slug
+                )
+            }
+        }
+    }
+
     private fun formatEmptyValue(
         value: String?,
         defaultValue: String = ""

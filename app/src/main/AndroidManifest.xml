@@ -39,12 +39,17 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Activity.MovieDetailActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
             android:name=".Activity.PlayerActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
+	<activity
+    android:name=".MainActivity"
+    android:windowSoftInputMode="adjustResize"
+     />
     </application>
 
 </manifest>

@@ -64,8 +64,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("androidx.compose.foundation:foundation:1.5.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.x.x")
-    implementation("androidx.compose.runtime:runtime-livedata:x.x.x")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.9.0")
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
@@ -75,5 +75,6 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("androidx.compose.material:material-icons-extended")
 
 }

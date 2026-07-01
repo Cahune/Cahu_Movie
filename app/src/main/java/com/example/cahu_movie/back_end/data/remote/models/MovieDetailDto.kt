@@ -35,6 +35,9 @@ data class MovieDetailItem(
     val director: String? = null,
     val casts: String? = null,
 
+    val category: List<CategoryDto>? = null,
+    val categories: List<CategoryDto>? = null,
+
     val episodes: List<EpisodeServer>? = null
 )
 
