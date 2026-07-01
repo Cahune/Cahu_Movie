@@ -188,9 +188,21 @@ import kotlinx.serialization.Serializable
 }
 */
 @Serializable
+data class CategoryDto(
+    @SerialName("name")
+    val name: String? = null,
+    @SerialName("slug")
+    val slug: String? = null
+)
+
+@Serializable
 data class Item(
     @SerialName("casts")
     val casts: String? = null,
+    @SerialName("category")
+    val category: List<CategoryDto>? = null,
+    @SerialName("categories")
+    val categories: List<CategoryDto>? = null,
     @SerialName("created")
     val created: String? = null,
     @SerialName("current_episode")
