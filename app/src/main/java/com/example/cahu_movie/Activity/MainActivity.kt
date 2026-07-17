@@ -35,6 +35,8 @@ class MainActivity : ComponentActivity() {
                 HomeScreen(
                     uiState = uiState,
                     onRetry = homeViewModel::loadLatestMovies,
+                    onSearch = homeViewModel::searchMovies,
+                    onClearSearch = homeViewModel::loadLatestMovies,
                     onMovieClick = { movie ->
 
                         if (movie.slug.isBlank()) {

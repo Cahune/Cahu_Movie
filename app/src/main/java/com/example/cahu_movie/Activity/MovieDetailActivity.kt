@@ -277,6 +277,8 @@ private fun MovieDetailContent(
     ) {
         mutableStateOf(false)
     }
+    val firstEpisode =
+        episodeServers.firstPlayableEpisode()
 
     LazyColumn(
         modifier = Modifier
@@ -291,38 +293,73 @@ private fun MovieDetailContent(
         }
 
         item {
-            Button(
-                onClick = {
-                    showEpisodes = !showEpisodes
-                },
-                enabled = episodeServers.isNotEmpty(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = DetailPink,
-                    disabledContainerColor =
-                        DetailPink.copy(alpha = 0.4f)
-                ),
-                shape = RoundedCornerShape(24.dp),
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         horizontal = 10.dp,
                         vertical = 12.dp
-                    )
+                    ),
+                horizontalArrangement =
+                    Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = when {
-                        episodeServers.isEmpty() ->
-                            "Chưa có tập phim"
-
-                        showEpisodes ->
-                            "Ẩn danh sách tập"
-
-                        else ->
-                            "Xem ngay"
+                Button(
+                    onClick = {
+                        firstEpisode?.let(onEpisodeClick)
                     },
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold
-                )
+                    enabled = firstEpisode != null,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DetailPink,
+                        disabledContainerColor =
+                            DetailPink.copy(alpha = 0.4f)
+                    ),
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                ) {
+                    Text(
+                        text = if (firstEpisode == null) {
+                            "Chưa có tập"
+                        } else {
+                            "Xem ngay"
+                        },
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow =
+                            TextOverflow.Ellipsis
+                    )
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        showEpisodes = !showEpisodes
+                    },
+                    enabled = episodeServers.isNotEmpty(),
+                    colors =
+                        ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White,
+                            disabledContentColor =
+                                Color.White.copy(alpha = 0.45f)
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                ) {
+                    Text(
+                        text = if (showEpisodes) {
+                            "Ẩn danh sách"
+                        } else {
+                            "Danh sách tập"
+                        },
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow =
+                            TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 
@@ -673,6 +710,20 @@ private fun serverTitleColor(
 
         else ->
             DetailPink
+    }
+}
+
+private fun List<EpisodeServer>.firstPlayableEpisode():
+        EpisodeItem? {
+    return firstNotNullOfOrNull { server ->
+        server.items
+            .orEmpty()
+            .firstOrNull { episode ->
+                episode.embed
+                    ?.trim()
+                    .orEmpty()
+                    .isNotBlank()
+            }
     }
 }
 

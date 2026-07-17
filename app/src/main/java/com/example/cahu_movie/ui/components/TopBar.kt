@@ -14,20 +14,30 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.statusBarsPadding
-
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 
 @Composable
-fun TopBar() {
+fun TopBar(
+    isSearchActive: Boolean = false,
+    searchQuery: String = "",
+    onMenuClick: () -> Unit = {},
+    onSearchClick: () -> Unit = {},
+    onSearchQueryChange: (String) -> Unit = {},
+    onSearchSubmit: () -> Unit = {},
+    onCloseSearch: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,24 +50,85 @@ fun TopBar() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Menu,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(28.dp)
-        )
+        if (isSearchActive) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = "Tim kiem phim",
+                        color = Color(0xFF9CA3AF)
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = "Tim kiem",
+                        tint = Color.White
+                    )
+                },
+                trailingIcon = {
+                    IconButton(onClick = onCloseSearch) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = "Dong tim kiem",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedContainerColor = Color(0xFF1B1B27),
+                    unfocusedContainerColor = Color(0xFF1B1B27),
+                    focusedIndicatorColor = Color(0xFFE50914),
+                    unfocusedIndicatorColor = Color(0xFF343445),
+                    cursorColor = Color(0xFFE50914)
+                ),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        onSearchSubmit()
+                    }
+                )
+            )
+            IconButton(onClick = onSearchSubmit) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = "Tim",
+                    tint = Color.White,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+            return@Row
+        }
+
+        IconButton(onClick = onMenuClick) {
+            Icon(
+                imageVector = Icons.Outlined.Menu,
+                contentDescription = "Mo sidebar",
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+        }
         Text(
             text = "Cahu Movie",
             color = Color.White,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
-        Icon(
-            imageVector = Icons.Outlined.Search,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(26.dp)
-        )
+        IconButton(onClick = onSearchClick) {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = "Tim kiem",
+                tint = Color.White,
+                modifier = Modifier.size(26.dp)
+            )
+        }
 
     }
 }

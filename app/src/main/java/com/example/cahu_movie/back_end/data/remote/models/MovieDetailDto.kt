@@ -1,5 +1,6 @@
 package com.example.cahu_movie.back_end.data.remote.models
 
+import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 
 data class MovieDetailDto(
@@ -35,8 +36,8 @@ data class MovieDetailItem(
     val director: String? = null,
     val casts: String? = null,
 
-    val category: List<CategoryDto>? = null,
-    val categories: List<CategoryDto>? = null,
+    val category: JsonElement? = null,
+    val categories: JsonElement? = null,
 
     val episodes: List<EpisodeServer>? = null
 )

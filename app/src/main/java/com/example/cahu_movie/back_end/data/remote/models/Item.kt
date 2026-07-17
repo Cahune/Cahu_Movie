@@ -1,6 +1,7 @@
 package com.example.cahu_movie.back_end.data.remote.models
 
 
+import com.google.gson.JsonElement
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -189,6 +190,8 @@ import kotlinx.serialization.Serializable
 */
 @Serializable
 data class CategoryDto(
+    @SerialName("id")
+    val id: String? = null,
     @SerialName("name")
     val name: String? = null,
     @SerialName("slug")
@@ -200,9 +203,9 @@ data class Item(
     @SerialName("casts")
     val casts: String? = null,
     @SerialName("category")
-    val category: List<CategoryDto>? = null,
+    val category: JsonElement? = null,
     @SerialName("categories")
-    val categories: List<CategoryDto>? = null,
+    val categories: JsonElement? = null,
     @SerialName("created")
     val created: String? = null,
     @SerialName("current_episode")

@@ -3,6 +3,7 @@ package com.example.cahu_movie.Activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -36,6 +37,7 @@ class PlayerActivity : BaseActivity() {
     private var webView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var errorTextView: TextView? = null
+    private var backButton: TextView? = null
 
     private var fullscreenView: View? = null
 
@@ -62,7 +64,7 @@ class PlayerActivity : BaseActivity() {
 
         requestedOrientation =
             ActivityInfo
-                .SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                .SCREEN_ORIENTATION_PORTRAIT
 
         val embedUrl = intent
             .getStringExtra(EXTRA_EMBED_URL)
@@ -92,6 +94,7 @@ class PlayerActivity : BaseActivity() {
 
         hideSystemBars()
         createEmbedPlayer(embedUrl)
+        createBackToDetailButton()
         configureBackButton()
     }
 
@@ -384,6 +387,7 @@ class PlayerActivity : BaseActivity() {
         fullscreenCallback = callback
 
         webView?.visibility = View.GONE
+        backButton?.visibility = View.GONE
 
         val container =
             FrameLayout(this).apply {
@@ -401,6 +405,10 @@ class PlayerActivity : BaseActivity() {
             container,
             matchParentLayoutParams()
         )
+
+        requestedOrientation =
+            ActivityInfo
+                .SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 
         hideSystemBars()
     }
@@ -426,13 +434,47 @@ class PlayerActivity : BaseActivity() {
         fullscreenContainer = null
 
         webView?.visibility = View.VISIBLE
+        backButton?.visibility = View.VISIBLE
 
         val callback = fullscreenCallback
         fullscreenCallback = null
 
         callback?.onCustomViewHidden()
 
+        requestedOrientation =
+            ActivityInfo
+                .SCREEN_ORIENTATION_PORTRAIT
+
         hideSystemBars()
+    }
+
+    private fun createBackToDetailButton() {
+        val button =
+            TextView(this).apply {
+                text = "Quay lai"
+                setTextColor(Color.WHITE)
+                textSize = 15f
+                gravity = Gravity.CENTER
+                setBackgroundColor(Color.argb(170, 0, 0, 0))
+                setPadding(
+                    28,
+                    14,
+                    28,
+                    14
+                )
+                isClickable = true
+                isFocusable = true
+                setOnClickListener {
+                    finish()
+                }
+            }
+
+        backButton = button
+
+        rootContainer.addView(
+            button,
+            backButtonLayoutParams()
+        )
     }
 
     private fun createErrorTextView():
@@ -497,6 +539,22 @@ class PlayerActivity : BaseActivity() {
         )
     }
 
+    private fun backButtonLayoutParams():
+            FrameLayout.LayoutParams {
+        return FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            Gravity.TOP or Gravity.START
+        ).apply {
+            setMargins(
+                32,
+                72,
+                0,
+                0
+            )
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -522,6 +580,16 @@ class PlayerActivity : BaseActivity() {
         if (hasFocus) {
             hideSystemBars()
         }
+    }
+
+    override fun onConfigurationChanged(
+        newConfig: Configuration
+    ) {
+        super.onConfigurationChanged(
+            newConfig
+        )
+
+        hideSystemBars()
     }
 
     override fun onDestroy() {
