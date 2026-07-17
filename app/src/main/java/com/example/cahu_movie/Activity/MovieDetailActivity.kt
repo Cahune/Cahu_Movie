@@ -21,9 +21,13 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,6 +54,7 @@ import com.example.cahu_movie.back_end.data.remote.models.MovieDetailItem
 import com.example.cahu_movie.ui.detail.MovieDetailUiState
 import com.example.cahu_movie.ui.detail.MovieDetailViewModel
 import com.example.cahu_movie.ui.theme.Cahu_MovieTheme
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 private val DetailBackground = Color(0xFF0D0B14)
@@ -95,8 +100,11 @@ class MovieDetailActivity : BaseActivity() {
                     onRetry = {
                         viewModel.retry()
                     },
-                    onEpisodeClick = { episode ->
-                        openEpisode(episode)
+                    onEpisodeClick = { episode, episodes ->
+                        openEpisode(
+                            episode = episode,
+                            episodes = episodes
+                        )
                     }
                 )
             }
@@ -104,7 +112,8 @@ class MovieDetailActivity : BaseActivity() {
     }
 
     private fun openEpisode(
-        episode: EpisodeItem
+        episode: PlayerEpisode,
+        episodes: List<PlayerEpisode>
     ) {
         val embedUrl = episode.embed
             ?.trim()
@@ -124,7 +133,9 @@ class MovieDetailActivity : BaseActivity() {
             PlayerActivity.newIntent(
                 context = this,
                 embedUrl = embedUrl,
-                episodeName = episodeDisplayName(episode)
+                episodeName = episodeDisplayName(episode),
+                episodeKey = episode.playerEpisodeKey(),
+                episodesJson = Gson().toJson(episodes)
             )
         )
     }
@@ -156,7 +167,7 @@ private fun MovieDetailScreen(
     uiState: MovieDetailUiState,
     onBackClick: () -> Unit,
     onRetry: () -> Unit,
-    onEpisodeClick: (EpisodeItem) -> Unit
+    onEpisodeClick: (PlayerEpisode, List<PlayerEpisode>) -> Unit
 ) {
     when (uiState) {
         MovieDetailUiState.Loading -> {
@@ -247,7 +258,7 @@ private fun DetailErrorContent(
 private fun MovieDetailContent(
     response: MovieDetailDto,
     onBackClick: () -> Unit,
-    onEpisodeClick: (EpisodeItem) -> Unit
+    onEpisodeClick: (PlayerEpisode, List<PlayerEpisode>) -> Unit
 ) {
     val movie = response.movie
 
@@ -277,8 +288,21 @@ private fun MovieDetailContent(
     ) {
         mutableStateOf(false)
     }
+    val allEpisodes =
+        episodeServers.flatMap { server ->
+            server.items.orEmpty().map { episode ->
+                episode.toPlayerEpisode(
+                    serverName = server.serverName
+                )
+            }
+        }
     val firstEpisode =
-        episodeServers.firstPlayableEpisode()
+        allEpisodes.firstOrNull { episode ->
+            episode.embed
+                ?.trim()
+                .orEmpty()
+                .isNotBlank()
+        }
 
     LazyColumn(
         modifier = Modifier
@@ -286,9 +310,15 @@ private fun MovieDetailContent(
             .background(DetailBackground)
     ) {
         item {
-            MoviePosterHeader(
+            DetailTopHeader(
                 movie = movie,
                 onBackClick = onBackClick
+            )
+        }
+
+        item {
+            MoviePosterHeader(
+                movie = movie
             )
         }
 
@@ -305,7 +335,12 @@ private fun MovieDetailContent(
             ) {
                 Button(
                     onClick = {
-                        firstEpisode?.let(onEpisodeClick)
+                        firstEpisode?.let { episode ->
+                            onEpisodeClick(
+                                episode,
+                                allEpisodes
+                            )
+                        }
                     },
                     enabled = firstEpisode != null,
                     colors = ButtonDefaults.buttonColors(
@@ -370,8 +405,14 @@ private fun MovieDetailContent(
                 EpisodeServerSection(
                     server = server,
                     serverIndex = serverIndex,
-                    onEpisodeClick =
-                        onEpisodeClick
+                    onEpisodeClick = { episode ->
+                        onEpisodeClick(
+                            episode.toPlayerEpisode(
+                                serverName = server.serverName
+                            ),
+                            allEpisodes
+                        )
+                    }
                 )
             }
         }
@@ -391,9 +432,50 @@ private fun MovieDetailContent(
 }
 
 @Composable
-private fun MoviePosterHeader(
+private fun DetailTopHeader(
     movie: MovieDetailItem,
     onBackClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .background(DetailSurface)
+            .padding(
+                horizontal = 8.dp,
+                vertical = 10.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = onBackClick
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                contentDescription = "Quay lại",
+                tint = Color.White
+            )
+        }
+        Text(
+            text = movie.name
+                ?.takeIf { it.isNotBlank() }
+                ?: "Chi tiết phim",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(
+                start = 4.dp,
+                end = 12.dp
+            )
+        )
+    }
+}
+
+@Composable
+private fun MoviePosterHeader(
+    movie: MovieDetailItem
 ) {
     Box(
         modifier = Modifier
@@ -408,26 +490,6 @@ private fun MoviePosterHeader(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
-        TextButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .statusBarsPadding()
-                .align(Alignment.TopStart)
-                .padding(4.dp)
-                .background(
-                    color = Color.Black.copy(
-                        alpha = 0.55f
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                )
-        ) {
-            Text(
-                text = "← Quay lại",
-                color = Color.White,
-                fontWeight = FontWeight.Medium
-            )
-        }
 
         Column(
             modifier = Modifier
@@ -727,6 +789,26 @@ private fun List<EpisodeServer>.firstPlayableEpisode():
     }
 }
 
+private fun EpisodeItem.toPlayerEpisode(
+    serverName: String?
+): PlayerEpisode {
+    return PlayerEpisode(
+        name = name,
+        slug = slug,
+        embed = embed,
+        serverName = serverName
+    )
+}
+
+private fun PlayerEpisode.playerEpisodeKey(): String {
+    return listOf(
+        serverName.orEmpty(),
+        slug.orEmpty(),
+        name.orEmpty(),
+        embed.orEmpty()
+    ).joinToString("|")
+}
+
 private fun episodeButtonName(
     episode: EpisodeItem
 ): String {
@@ -742,7 +824,7 @@ private fun episodeButtonName(
 }
 
 private fun episodeDisplayName(
-    episode: EpisodeItem
+    episode: PlayerEpisode
 ): String {
     val episodeName = episode.name
         ?.trim()
