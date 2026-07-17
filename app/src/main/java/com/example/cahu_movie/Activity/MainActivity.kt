@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
                     onRetry = homeViewModel::loadLatestMovies,
                     onSearch = homeViewModel::searchMovies,
                     onClearSearch = homeViewModel::loadLatestMovies,
+                    onFiltersSelected = homeViewModel::applyMovieFilters,
                     onMovieClick = { movie ->
 
                         if (movie.slug.isBlank()) {
