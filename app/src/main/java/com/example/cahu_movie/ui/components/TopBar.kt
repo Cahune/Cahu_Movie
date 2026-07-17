@@ -13,7 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Search
@@ -51,6 +53,14 @@ fun TopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         if (isSearchActive) {
+            IconButton(onClick = onCloseSearch) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = "Quay lại",
+                    tint = Color.White,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
@@ -58,15 +68,8 @@ fun TopBar(
                 singleLine = true,
                 placeholder = {
                     Text(
-                        text = "Tim kiem phim",
+                        text = "Tìm kiếm phim",
                         color = Color(0xFF9CA3AF)
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = "Tim kiem",
-                        tint = Color.White
                     )
                 },
                 trailingIcon = {
@@ -87,6 +90,7 @@ fun TopBar(
                     unfocusedIndicatorColor = Color(0xFF343445),
                     cursorColor = Color(0xFFE50914)
                 ),
+                shape = RoundedCornerShape(10.dp),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Search
                 ),
@@ -96,14 +100,6 @@ fun TopBar(
                     }
                 )
             )
-            IconButton(onClick = onSearchSubmit) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "Tim",
-                    tint = Color.White,
-                    modifier = Modifier.size(26.dp)
-                )
-            }
             return@Row
         }
 

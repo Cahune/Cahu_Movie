@@ -2,10 +2,12 @@ package com.example.cahu_movie.ui.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +24,7 @@ import com.example.cahu_movie.back_end.domain.models.Movie
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.rememberDrawerState
 import com.example.cahu_movie.ui.components.AppSidebar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,6 +41,23 @@ fun HomeScreen(
     var selectedSidebarItem by remember { mutableStateOf("Trang chu") }
     var searchQuery by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
+
+    LaunchedEffect(
+        isSearchActive,
+        searchQuery
+    ) {
+        if (!isSearchActive) {
+            return@LaunchedEffect
+        }
+
+        delay(400)
+
+        if (searchQuery.isBlank()) {
+            onClearSearch()
+        } else {
+            onSearch(searchQuery)
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -109,13 +129,20 @@ fun HomeScreen(
                 when (uiState) {
 
                     HomeUiState.Loading -> {
-                        LoadingContent()
+                        LoadingContent(
+                            modifier = Modifier
+                                .weight(1f)
+                                .imePadding()
+                        )
                     }
 
                     is HomeUiState.Error -> {
                         ErrorContent(
                             message = uiState.message,
-                            onRetry = onRetry
+                            onRetry = onRetry,
+                            modifier = Modifier
+                                .weight(1f)
+                                .imePadding()
                         )
                     }
 
@@ -124,6 +151,9 @@ fun HomeScreen(
                         MovieGrid(
                             movies = uiState.movies,
                             onMovieClick = onMovieClick,
+                            modifier = Modifier
+                                .weight(1f)
+                                .imePadding(),
                             header = if (!isSearchActive && uiState.bannerMovies.isNotEmpty()) {
                                 {
                                     BannerSlider(

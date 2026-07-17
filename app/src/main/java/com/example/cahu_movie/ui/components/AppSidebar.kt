@@ -36,12 +36,12 @@ data class SidebarItem(
 )
 
 private val sidebarItems = listOf(
-    SidebarItem("Trang chu", Icons.Outlined.Home),
-    SidebarItem("Phim moi", Icons.Outlined.Movie),
-    SidebarItem("Yeu thich", Icons.Outlined.FavoriteBorder),
-    SidebarItem("Da xem", Icons.Outlined.History),
-    SidebarItem("Cai dat", Icons.Outlined.Settings),
-    SidebarItem("Thong tin", Icons.Outlined.Info)
+    SidebarItem("Trang chủ", Icons.Outlined.Home),
+    SidebarItem("Phim mới", Icons.Outlined.Movie),
+    SidebarItem("Yêu thích", Icons.Outlined.FavoriteBorder),
+    SidebarItem("Đã xem", Icons.Outlined.History),
+    SidebarItem("Cài đặt", Icons.Outlined.Settings),
+    SidebarItem("Thông tin", Icons.Outlined.Info)
 )
 
 @Composable
